@@ -33,7 +33,7 @@ def generate_figure() -> None:
     """Generate Figure H.3: ACC and price outcomes (descriptive).
 
     Uses the full sample with the finite-resolution estimand ACC_delta;
-    saturated auctions are retained and marked (Section 8.1).
+    saturated auctions are retained and marked (Section 7.1).
     """
     auctions = load_data()
 

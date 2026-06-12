@@ -13,7 +13,7 @@ The evidence-factor index is: E(b) = (1 + r)^{H(p)}
 Key properties:
     - ACC = log(E): Evidence factors multiply, so ACC values add
     - Concave in r: Diminishing marginal returns to competition
-    - Derived from Evidence Composition axiom C6'
+    - Derived from the evidence composition axiom (Axiom C.2 in the paper)
 
 Higher ACC indicates stronger competitive pressure (lower information rent).
 
@@ -420,6 +420,13 @@ def acc(bids: ArrayLike, *, reverse: bool = False) -> float | np.ndarray:
     ACC = H(p) · log(1 + r)  where r = ρ / G*
 
     Higher ACC indicates stronger competitive pressure (lower information rent).
+
+    Boundary note: the paper assigns ACC = +inf to exactly tied active bids
+    (Corollary 3.12). This implementation instead floors G* at machine epsilon
+    (~2.2e-16), so exact ties return a large finite value (~36.7 · H) and
+    aggregates stay finite. For tick-recorded data use ``acc_delta``, the
+    paper's finite-resolution estimand, which caps ties at the resolution
+    floor and flags them via ``saturation_flag``.
 
     Args:
         bids: Bid vector (1D) or matrix of bid vectors (2D).

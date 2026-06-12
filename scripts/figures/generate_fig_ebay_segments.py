@@ -5,7 +5,7 @@ Two-panel heatmap showing:
 (a) ACC_delta mean (std) by category × duration
 (b) ACE_delta mean (std) by category × duration
 
-Uses the finite-resolution estimand (Section 8.1) so tied auctions enter
+Uses the finite-resolution estimand (Section 7.1) so tied auctions enter
 at the resolution cap instead of being dropped.
 """
 

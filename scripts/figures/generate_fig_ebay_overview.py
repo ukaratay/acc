@@ -33,7 +33,7 @@ def generate_figure() -> None:
     """Generate Figure H.1: Data overview and ACC components."""
     auctions = load_data()
 
-    # Retain all auctions; ties are flagged, not dropped (Section 8.1)
+    # Retain all auctions; ties are flagged, not dropped (Section 7.1)
     n_sat = int(auctions["SAT"].sum())
     print(f"Retained all {auctions.height} auctions ({n_sat} saturated at $0.01 tick)")
 

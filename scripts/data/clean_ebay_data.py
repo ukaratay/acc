@@ -12,7 +12,7 @@ import polars as pl
 import acc_metrics as acc
 
 # eBay's minimum bid increment is price-dependent; $0.01 is the finest
-# recorded resolution and the convention used in the paper (Appendix G).
+# recorded resolution and the convention used in the paper (Appendix F).
 EBAY_TICK = 0.01
 
 
@@ -121,7 +121,7 @@ def aggregate_to_auctions(bids_df: pl.DataFrame) -> pl.DataFrame:
     )
 
     # Compute ACC metrics, including the finite-resolution estimand
-    # ACC_delta and the saturation flag at the recording tick (Section 8.1).
+    # ACC_delta and the saturation flag at the recording tick (Section 7.1).
     acc_values = []
     h_values = []
     rho_values = []

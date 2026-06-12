@@ -53,7 +53,14 @@ make verify       # symbolic and numerical theorem checks
 ```
 
 Simulations use a fixed seed (12345), so regenerated figures and statistics
-reproduce the paper exactly.
+reproduce the paper exactly. The paper's source repository compiles against a
+committed snapshot of this output; the reproduction check is to run
+`make simulations && make figures` here and compare the regenerated
+`figures/generated/` files (in particular `generated_stats.tex`) against the
+versions the paper was compiled with. `make figures` reads the included
+`carwash_auctions.csv` directly and does not require the IEEE supplementary
+file; the xlsx is needed only to rebuild the CSV from scratch via
+`scripts/data/load_carwash_data.py`.
 
 ## Data
 
@@ -67,7 +74,9 @@ reproduce the paper exactly.
   auctions (2002–2013) with confession-based ground-truth labels, from Signor
   et al., "Collusion Detection in Infrastructure Procurement: A Modified Order
   Statistic Method for Uncapped Auctions" (*IEEE Transactions on Engineering
-  Management*). The processed `carwash_auctions.csv` is included. The raw IEEE
+  Management*). The processed `carwash_auctions.csv` is included; it is a
+  derived dataset of facts (bids, estimates, computed metrics) extracted from
+  the published supplementary material, redistributed on that basis. The raw IEEE
   supplementary file (`supp2-3049129.xlsx`) is not redistributed here; to rerun
   `scripts/data/load_carwash_data.py` from scratch, download it from the IEEE
   article page (DOI: 10.1109/TEM.2021.3049129) and place it in

@@ -51,7 +51,7 @@ class TestNormalizedGini:
         assert pytest.approx(result, rel=1e-6) == 1 / 6
 
     def test_scale_invariance(self):
-        """Gini coefficient should be scale-invariant (D1)."""
+        """Gini should be scale-invariant (a derived property, not an axiom)."""
         bids = [100, 90, 80, 70, 60]
         scaled_bids = [b * 1000 for b in bids]
         assert pytest.approx(normalized_gini(bids), rel=1e-6) == normalized_gini(
@@ -59,7 +59,7 @@ class TestNormalizedGini:
         )
 
     def test_permutation_invariance(self):
-        """Gini should be unchanged by reordering (D2)."""
+        """Gini should be unchanged by reordering (anonymity, derived property)."""
         bids = [100, 90, 80, 70, 60]
         shuffled = [80, 100, 60, 90, 70]
         assert pytest.approx(normalized_gini(bids), rel=1e-6) == normalized_gini(
@@ -75,13 +75,13 @@ class TestNormalizedGini:
         )
 
     def test_boundedness(self):
-        """Gini should be in [0, 1) for positive bids (D4)."""
+        """Gini should be in [0, 1) for positive bids."""
         bids = [100, 90, 80, 70, 60]
         result = normalized_gini(bids)
         assert 0 <= result < 1
 
     def test_schur_convexity(self):
-        """Gini should decrease under doubly stochastic averaging (D3).
+        """Gini should decrease under doubly stochastic averaging (Schur-convexity).
 
         This is the key property that G* satisfies.
         """
@@ -96,12 +96,12 @@ class TestNormalizedGini:
         # Gini should decrease (strict inequality for non-permutation DS matrix)
         assert gini_avg < gini_orig
 
-    def test_d4_equal_transfer_sensitivity(self):
-        """New D.4: Equal adjacent-rank transfer sensitivity.
+    def test_equal_transfer_sensitivity(self):
+        """Axiom D.3 (equal transfer sensitivity).
 
         A Pigou-Dalton transfer of epsilon from rank k to rank k+1
-        (descending order) should change G* by the same amount for all k.
-        This is the NEW axiom that correctly characterizes G*.
+        (descending order) changes G* by the same amount for all k,
+        holding the bid vector and epsilon fixed.
         """
         bids = np.array([100.0, 80.0, 60.0, 40.0, 20.0])
         eps = 0.5
@@ -130,11 +130,11 @@ class TestNormalizedGini:
         # All deltas should be negative (equalizing transfer reduces dispersion)
         assert delta_12 < 0
 
-    def test_d4_old_uniform_sensitivity_violated(self):
-        """Regression test: OLD D.4 (uniform sensitivity) is NOT satisfied by G*.
+    def test_uniform_sensitivity_violated(self):
+        """Uniform sensitivity (dD/db_(k) constant across k) fails for G*.
 
-        The old axiom required dD/db_(k) constant across k, which G* violates.
-        This test documents the fix.
+        The characterization therefore uses equal adjacent-rank transfer
+        sensitivity (Axiom D.3), which G* satisfies, not uniform sensitivity.
         """
         bids = np.array([100.0, 80.0, 60.0, 40.0, 20.0])
         eps = 0.01
@@ -149,12 +149,12 @@ class TestNormalizedGini:
             partial = (normalized_gini(bids_up) - normalized_gini(bids)) / eps
             partials.append(partial)
 
-        # Under OLD D.4, all partials would be equal.
+        # Under uniform sensitivity, all partials would be equal.
         # For G*, they are NOT equal (they depend on the bid values).
         # The partial derivatives for G* are: (w_k * S - W) / S^2
         # which depends on S (total), W (weighted sum), and w_k (rank weight).
         assert pytest.approx(partials[0], rel=0.01) != partials[2], (
-            "Old uniform sensitivity should NOT hold for G*"
+            "Uniform sensitivity should NOT hold for G*"
         )
 
     def test_d1_calibration(self):
@@ -783,3 +783,62 @@ class TestAccDelta:
             dispersion_floor([1.0, 2.0], delta=-1.0)
         with pytest.raises(ValueError, match="delta"):
             saturation_flag([1.0, 2.0], delta=0.0)
+
+
+class TestGoldenValues:
+    """Pin the code-paper contract on published numbers."""
+
+    def test_table1_preview_vectors(self):
+        """acc() reproduces the paper's Table 1 preview values exactly."""
+        from acc_metrics import acc_components
+
+        auction_a = [10, 8, 7.5, 7, 6.5]
+        auction_b = [10, 8, 2, 1, 0.5]
+
+        h_a, rho_a, gini_a, acc_a, _ = acc_components(auction_a)
+        assert round(float(acc_a), 2) == 3.79
+        assert round(float(h_a), 2) == 1.60
+        assert round(float(gini_a), 2) == 0.08
+        assert rho_a == pytest.approx(0.80)
+
+        h_b, rho_b, gini_b, acc_b, _ = acc_components(auction_b)
+        assert round(float(acc_b), 2) == 1.15
+        assert round(float(h_b), 2) == 1.17
+        assert round(float(gini_b), 2) == 0.48
+        assert rho_b == pytest.approx(0.80)
+
+    def test_carwash_csv_contract(self):
+        """Two-bidder Car Wash rows reproduce from their min/max bid columns.
+
+        The CSV stores summary columns only; for n_bidders = 2 the full bid
+        vector is (min_bid, max_bid), so every metric column is recomputable
+        and must match the shipped data exactly (procurement orientation).
+        """
+        import csv
+        from pathlib import Path
+
+        from acc_metrics import acc_components
+
+        csv_path = (
+            Path(__file__).resolve().parents[1]
+            / "data"
+            / "empirical"
+            / "carwash"
+            / "carwash_auctions.csv"
+        )
+        if not csv_path.is_file():
+            pytest.skip("Car Wash dataset not present")
+
+        with csv_path.open() as fh:
+            rows = [r for r in csv.DictReader(fh) if int(r["n_bidders"]) == 2]
+        assert rows, "expected at least one two-bidder auction"
+
+        for row in rows:
+            bids = [float(row["min_bid"]), float(row["max_bid"])]
+            h, rho, gini, acc_val, _ = acc_components(bids, reverse=True)
+            ace = acc_val / math.log(2)
+            assert h == pytest.approx(float(row["H"]), abs=1e-9)
+            assert rho == pytest.approx(float(row["rho"]), abs=1e-9)
+            assert gini == pytest.approx(float(row["G_star"]), abs=1e-9)
+            assert acc_val == pytest.approx(float(row["ACC"]), abs=1e-9)
+            assert ace == pytest.approx(float(row["ACE"]), abs=1e-9)

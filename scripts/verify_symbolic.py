@@ -66,21 +66,21 @@ T = Symbol("T", positive=True, integer=True)
 
 def verify_lemma2_functional_equation() -> bool:
     """
-    Lemma 2: The Evidence Composition axiom C6' implies e(r) = (1+r)^c.
+    Lemma 2: The evidence composition axiom (Axiom C.2) implies e(r) = (1+r)^c.
 
-    C6' states: e(r₁)·e(r₂) = e(r₁ + r₂ + r₁r₂)
+    Axiom C.2 states: e(r₁)·e(r₂) = e(r₁ + r₂ + r₁r₂)
 
     Key insight: (1+r₁)(1+r₂) = 1 + r₁ + r₂ + r₁r₂
 
     Proof outline:
     1. Define φ(r) = log e(r)
-    2. C6' gives: φ(r₁) + φ(r₂) = φ(r₁ + r₂ + r₁r₂)
+    2. Axiom C.2 gives: φ(r₁) + φ(r₂) = φ(r₁ + r₂ + r₁r₂)
     3. Substitute s = 1+r, so φ(s-1) + φ(t-1) = φ(st-1)
     4. Define ψ(x) = φ(e^x - 1), get Cauchy's equation ψ(x+y) = ψ(x) + ψ(y)
     5. Under continuity, ψ(x) = cx
     6. Back-substitute: e(r) = (1+r)^c
     """
-    # Verify the algebraic identity underlying C6'
+    # Verify the algebraic identity underlying Axiom C.2
     lhs = (1 + r1) * (1 + r2)
     rhs = 1 + r1 + r2 + r1 * r2
     assert simplify(lhs - rhs) == 0, f"Identity failed: {simplify(lhs - rhs)}"
@@ -525,8 +525,8 @@ def verify_counterexample_3_1() -> bool:
     """
     Lines 516/520: Counter-example showing axiom C6 necessity.
 
-    1. e(r) = 2^r violates C6': 2^r₁ · 2^r₂ ≠ 2^(r₁+r₂+r₁r₂)
-    2. e(r) = 1+r satisfies C6': (1+r₁)(1+r₂) = 1+r₁+r₂+r₁r₂
+    1. e(r) = 2^r violates Axiom C.2: 2^r₁ · 2^r₂ ≠ 2^(r₁+r₂+r₁r₂)
+    2. e(r) = 1+r satisfies Axiom C.2: (1+r₁)(1+r₂) = 1+r₁+r₂+r₁r₂
     """
     # Part 1: e(r) = 2^r violates composition
     e_exp_lhs = 2**r1 * 2**r2  # e(r₁)·e(r₂) = 2^(r₁+r₂)
@@ -534,12 +534,12 @@ def verify_counterexample_3_1() -> bool:
     diff_exp = simplify(e_exp_lhs - e_exp_rhs)
     # These should NOT be equal (the difference should be nonzero)
     # 2^(r₁+r₂) ≠ 2^(r₁+r₂+r₁r₂) unless r₁r₂ = 0
-    assert diff_exp != 0, "Exponential evidence should violate C6'"
+    assert diff_exp != 0, "Exponential evidence must violate C.2"
 
     # Part 2: e(r) = 1+r satisfies composition
     e_lin_lhs = (1 + r1) * (1 + r2)
     e_lin_rhs = 1 + r1 + r2 + r1 * r2
-    assert simplify(e_lin_lhs - e_lin_rhs) == 0, "Linear evidence should satisfy C6'"
+    assert simplify(e_lin_lhs - e_lin_rhs) == 0, "Linear evidence must satisfy C.2"
 
     return True
 
