@@ -1,0 +1,26 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+*.egg-info/
+dist/
+build/
+.pytest_cache/
+.ruff_cache/
+.coverage
+
+# Generated outputs (regenerate with `make simulations && make figures`)
+/figures/
+/data/simulations/
+
+# Source data not redistributed (download from the IEEE article page; see README)
+data/empirical/carwash/supp2-3049129.xlsx
+
+# IDE
+.idea/
+.vscode/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
