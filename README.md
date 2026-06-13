@@ -1,5 +1,7 @@
 # Auction Competitive Capacity (ACC)
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.20672955.svg)](https://doi.org/10.5281/zenodo.20672955)
+
 Replication code for *"Auction Competitive Capacity: Characterization and Inference"*
 (Durmus Karatay). The paper axiomatizes a measure of competitive pressure in auctions,
 
