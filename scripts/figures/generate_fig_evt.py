@@ -24,6 +24,7 @@ from style import (
     DIST_MARKERS,
     DIST_ORDER_EXTENDED,
     FIGSIZE_WIDE,
+    LEGEND_BOX,
     save_figure,
     setup_ax,
 )
@@ -133,7 +134,9 @@ def generate_figure() -> None:
         title=r"(c) Normalized ACC",
     )
     ax3.set_xscale("log")
-    ax3.legend(loc="upper right", fontsize=8)
+    # Pareto plateaus just below the legend at right; white backing avoids a
+    # near-touch between its markers and the bottom legend entry.
+    ax3.legend(loc="upper right", fontsize=8, **LEGEND_BOX)
 
     # Adjust layout
     fig.tight_layout()

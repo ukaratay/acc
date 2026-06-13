@@ -29,6 +29,11 @@ mpl.rcParams.update(
         "font.serif": ["TeX Gyre Pagella", "Palatino", "Palatino Linotype", "Times"],
         # STIX Two is designed to harmonize with Times/Palatino-like fonts
         "mathtext.fontset": "stix",
+        # Embed TrueType (Type 42) glyphs, not the default Type 3 bitmaps.
+        # Type 3 fonts are flagged by arXiv and rejected by some journals,
+        # and do not scale or search; Type 42 keeps figure text as vectors.
+        "pdf.fonttype": 42,
+        "ps.fonttype": 42,
         "font.size": 9,
         "axes.labelsize": 9,
         "axes.titlesize": 10,
@@ -71,6 +76,13 @@ mpl.rcParams.update(
         "legend.borderpad": 0.4,
     }
 )
+
+# Semi-opaque white legend backing for dense panels. Use in addition to a
+# best-quadrant `loc` so the legend stays readable even where a stray marker
+# or curve passes behind it; the global default is frameless (legend.frameon
+# above is False), so this is opt-in per call via `**LEGEND_BOX`.
+LEGEND_BOX = dict(frameon=True, framealpha=0.9, facecolor="white", edgecolor="none")
+
 
 # =============================================================================
 # Color palettes (cubehelix: grayscale-friendly with monotonic luminance)

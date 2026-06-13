@@ -24,6 +24,7 @@ from style import (
     COLOR_5,
     FIGSIZE_TALL,
     GRAY_MED,
+    LEGEND_BOX,
     add_panel_label,
     save_figure,
     setup_ax,
@@ -242,7 +243,9 @@ def plot_component_bars(ax: plt.Axes, stats_df: pd.DataFrame) -> None:
     ax.set_xticks(x)
     ax.set_xticklabels([r"$H$", r"$\rho$", r"$G^*$", "ACE"])
     setup_ax(ax, "", "Relative to Not-Confirmed")
-    ax.legend(loc="upper right", fontsize=10)
+    # Only the ACE bar (rightmost) is tall; the H/rho region at upper left is
+    # empty, so anchor the legend there with a white backing for safety.
+    ax.legend(loc="upper left", fontsize=10, **LEGEND_BOX)
     ax.set_ylim(0, 1.6)
 
 
@@ -297,7 +300,8 @@ def plot_ace_density(ax: plt.Axes, df: pd.DataFrame) -> None:
         ax.plot(kde_x, kde_h(kde_x), color=COLOR_5, lw=2.0, linestyle="--")
 
     setup_ax(ax, r"ACE = ACC / $\log n$", "Density")
-    ax.legend(loc="upper right", fontsize=10)
+    # Collusive mass sits at high ACE (right), so place the legend on the left.
+    ax.legend(loc="upper left", fontsize=10, **LEGEND_BOX)
 
 
 def plot_win_pte_density(ax: plt.Axes, df: pd.DataFrame) -> None:
@@ -354,7 +358,9 @@ def plot_win_pte_density(ax: plt.Axes, df: pd.DataFrame) -> None:
         ax.plot(kde_x, kde_h(kde_x), color=COLOR_5, lw=2.0, linestyle="--")
 
     setup_ax(ax, "Winning Bid / PTE", "Density")
-    ax.legend(loc="upper right", fontsize=10)
+    # The tall mode bar sits left of the upper-right legend; only the sparse
+    # collusive tail passes behind it, which the white backing masks.
+    ax.legend(loc="upper right", fontsize=10, **LEGEND_BOX)
 
 
 # =============================================================================

@@ -16,6 +16,7 @@ from style import (
     DIST_MARKERS,
     DIST_ORDER_EXTENDED,
     FIGSIZE_WIDE,
+    LEGEND_BOX,
     get_cubehelix_colors,
     save_figure,
     setup_ax,
@@ -155,7 +156,9 @@ def generate_figure() -> None:
         ylabel=r"$E[D(k)]$",
         title=r"(b) Mean depth curves by distribution",
     )
-    ax2.legend(loc="lower right", fontsize=8)
+    # Low curves (Lognormal/Exponential) sit bottom-right and Pareto climbs to
+    # the top-right; the upper-left stays clear, so anchor the legend there.
+    ax2.legend(loc="upper left", fontsize=8, **LEGEND_BOX)
 
     fig.tight_layout()
 

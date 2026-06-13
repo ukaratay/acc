@@ -18,6 +18,7 @@ from style import (
     COLOR_3,
     COLOR_5,
     FIGSIZE_WIDE,
+    LEGEND_BOX,
     save_figure,
     setup_ax,
 )
@@ -121,7 +122,9 @@ def generate_figure() -> None:
         ylabel=r"$\log_{10}$(Final Price / Opening Bid)",
         title=r"(a) $\mathrm{ACC}_\delta$ vs Price Premium",
     )
-    ax1.legend(loc="upper right", fontsize=9)
+    # Dense scatter with a negative trend fills the upper-left; the upper-right
+    # is sparsest. The white backing masks any stray points behind the legend.
+    ax1.legend(loc="upper right", fontsize=9, **LEGEND_BOX)
     ax1.set_xlim(x_min, x_max)
     ax1.set_ylim(y_min, y_max)
 
@@ -187,7 +190,9 @@ def generate_figure() -> None:
         ylabel="Mean Price Premium\n(Final / Opening Bid)",
         title=r"(b) Price Premium by $\mathrm{ACC}_\delta$ Level",
     )
-    ax2.legend(loc="upper right", fontsize=9)
+    # Bars fall from Q1 to Q4, leaving the upper right clear; the white backing
+    # guards against the tall Palm bars on a log scale.
+    ax2.legend(loc="upper right", fontsize=9, **LEGEND_BOX)
 
     fig.tight_layout()
 

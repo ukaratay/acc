@@ -18,6 +18,7 @@ from style import (
     COLOR_3,
     COLOR_5,
     FIGSIZE_TALL,
+    LEGEND_BOX,
     save_figure,
     setup_ax,
 )
@@ -146,7 +147,9 @@ def generate_figure() -> None:
         ylabel=r"Normalized Gini $G^*$",
         title="(c) Dispersion Increases with $n$",
     )
-    ax3.legend(loc="upper left", fontsize=8)
+    # Upper-left holds a few high-G* low-n outliers; white backing keeps the
+    # per-category slope labels readable over them.
+    ax3.legend(loc="upper left", fontsize=8, **LEGEND_BOX)
     ax3.set_xlim(0, 25)
     ax3.set_ylim(0, None)  # Origin at bottom left
 
