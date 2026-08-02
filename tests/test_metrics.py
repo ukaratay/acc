@@ -278,7 +278,7 @@ class TestACC:
         )
         results = acc(auctions)
         assert isinstance(results, np.ndarray) and results.shape == (3,)
-        values = results.tolist()
+        values = results.tolist()  # ty: ignore[no-matching-overload]
         # All should be positive and finite
         assert all(r > 0 and math.isfinite(r) for r in values)
         # More competitive (3rd) should have higher ACC
@@ -333,7 +333,7 @@ class TestEvidenceFactor:
         )
         results = evidence_factor(auctions)
         assert isinstance(results, np.ndarray) and results.shape == (2,)
-        assert all(r > 1.0 for r in results.tolist())
+        assert all(r > 1.0 for r in results.tolist())  # ty: ignore[no-matching-overload]
 
 
 class TestEntropy:
@@ -601,7 +601,7 @@ class TestReverseAuctions:
         )
         results = acc(auctions, reverse=True)
         assert isinstance(results, np.ndarray) and results.shape == (2,)
-        assert all(r > 0 and math.isfinite(r) for r in results.tolist())
+        assert all(r > 0 and math.isfinite(r) for r in results.tolist())  # ty: ignore[no-matching-overload]
 
 
 class TestBCaEdgeCases:

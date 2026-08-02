@@ -17,13 +17,13 @@ requires-python = ">=3.14"
 
 dependencies = [
     "numpy>=2.4.6",
-    "polars>=1.41.2",
-    "scipy>=1.12",
+    "polars>=1.43.0",
+    "scipy>=1.18.0",
     "seaborn>=0.13",
-    "matplotlib>=3.10.9",
+    "matplotlib>=3.11.1",
     "sympy>=1.14.0",
     "joblib>=1.3",
-    "numba>=0.65.1",
+    "numba>=0.66.0",
     "scikit-learn>=1.9.0",
     "openpyxl>=3.1.5",
 ]
@@ -33,11 +33,11 @@ Repository = "https://github.com/ukaratay/acc"
 
 [project.optional-dependencies]
 dev = [
-    "pytest>=9.0.3",
+    "pytest>=9.1.1",
     "pytest-cov>=4.0",
-    "ruff>=0.15.16",
-    "ty>=0.0.44",
-    "pre-commit>=4.6.0",
+    "ruff>=0.16.0",
+    "ty>=0.0.63",
+    "pre-commit>=4.6.1",
 ]
 
 [build-system]
@@ -92,8 +92,10 @@ root = ["src", "tests"]
 
 [tool.ty.rules]
 # numba's prange and the float|ndarray return unions of the batch API are
-# known typing friction; ty 0.0.44 flags them as errors. Keep them visible
-# as warnings without failing CI. Revisit as ty and numba stubs mature.
+# known typing friction; ty flags them as errors. Keep them visible as
+# warnings without failing CI. Revisit as ty and numba stubs mature.
+# ty 0.0.63 made warnings exit non-zero by default, so the `ty check`
+# invocations pass --exit-zero-on-warning to preserve that intent.
 not-iterable = "warn"
 not-subscriptable = "warn"
 
