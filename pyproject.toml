@@ -92,8 +92,10 @@ root = ["src", "tests"]
 
 [tool.ty.rules]
 # numba's prange and the float|ndarray return unions of the batch API are
-# known typing friction; ty 0.0.44 flags them as errors. Keep them visible
-# as warnings without failing CI. Revisit as ty and numba stubs mature.
+# known typing friction; ty flags them as errors. Keep them visible as
+# warnings without failing CI. Revisit as ty and numba stubs mature.
+# ty 0.0.63 made warnings exit non-zero by default, so the `ty check`
+# invocations pass --exit-zero-on-warning to preserve that intent.
 not-iterable = "warn"
 not-subscriptable = "warn"
 
